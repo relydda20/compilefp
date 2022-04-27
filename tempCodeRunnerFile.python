@@ -1,0 +1,1 @@
+self.menuAbout.addAction(self.actionAbout_vid2text)
