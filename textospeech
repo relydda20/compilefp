@@ -1,9 +1,11 @@
 import wave, contextlib, math, time
 import speech_recognition as sr
+import moviepy.editor as moviepy
 from moviepy.editor import AudioFileClip
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
 from PyQt5.QtCore import QThread, pyqtSignal
+import os as os
 
 class Ui_MainWindow(object):
     """Main window GUI."""
@@ -118,11 +120,15 @@ class Ui_MainWindow(object):
     def open_audio_file(self):
         """Open the audio (*.mp4) file."""
         file_name = QFileDialog.getOpenFileName()
-        if file_name[0][-3:] == "mp4":
+        clip=moviepy.VideoFileClip(file_name[0])
+        clip.write_videofile("myvideo.mp4")
+        new_clip="myvideo.mp4"
+        print(new_clip)
+        if new_clip[-3:] == "mp4":
             self.transcribe_button.setEnabled(True)
-            self.mp4_file_name = file_name[0]
+            self.mp4_file_name = new_clip
             self.message_label.setText("")
-            self.selected_video_label.setText(file_name[0])
+            self.selected_video_label.setText(new_clip[0])
         else:
             self.message_label.setText("Please select an *.mp4 file")
     def convert_mp4_to_wav(self):
@@ -162,6 +168,7 @@ class Ui_MainWindow(object):
         self.transcribe_button.setEnabled(True)
         self.message_label.setText("")
         self.update_text_output()
+        os.remove("myvideo.mp4")
     def set_progress_value(self, val):
         """Update progress bar value."""
         increment = int(math.floor(100*(float(val)/self.td)))
